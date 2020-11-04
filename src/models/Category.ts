@@ -6,7 +6,7 @@ import {
   UpdateDateColumn,
   OneToMany,
 } from 'typeorm';
-import ApplicationProduct from './ApplicationProducts';
+import Movement from './Movement';
 
 @Entity('categories')
 class Category {
@@ -16,11 +16,8 @@ class Category {
   @Column()
   name: string;
 
-  @OneToMany(
-    () => ApplicationProduct,
-    applicationProduct => applicationProduct.category,
-  )
-  applicationProduct: ApplicationProduct;
+  @OneToMany(() => Movement, movement => movement.category)
+  movement: Movement;
 
   @CreateDateColumn()
   created_at: Date;
