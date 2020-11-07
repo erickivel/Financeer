@@ -1,6 +1,6 @@
-import { getCustomRepository } from 'typeorm';
+import { getRepository } from 'typeorm';
 
-import MovementsRepository from '../repositories/MovementsRepository';
+import Movement from '../models/Movement';
 
 interface MovementBalanceByName {
   product_name: string;
@@ -10,9 +10,9 @@ interface MovementBalanceByName {
 
 class ListBalanceByMovementsNameService {
   public async execute(): Promise<MovementBalanceByName[]> {
-    const movementsRepository = getCustomRepository(MovementsRepository);
+    const movementsRepository = getRepository(Movement);
 
-    const movementsWithCategory = await movementsRepository.findWithCategory();
+    const movementsWithCategory = await movementsRepository.find();
 
     const movementsNames = movementsWithCategory.map(
       movement => movement.product_name,
@@ -30,9 +30,17 @@ class ListBalanceByMovementsNameService {
 
         const total_value_invested = movementsFilteredByName.reduce(
           (prevValueApplied, currMovement) => {
+            if (currMovement.movement_type === 'redemption') {
+              return (
+                Math.round(
+                  (prevValueApplied - Number(currMovement.movement_value)) *
+                    100,
+                ) / 100
+              );
+            }
             return (
               Math.round(
-                (Number(currMovement.value_applied) + prevValueApplied) * 100,
+                (prevValueApplied + Number(currMovement.movement_value)) * 100,
               ) / 100
             );
           },
@@ -41,7 +49,15 @@ class ListBalanceByMovementsNameService {
 
         const total_amount = movementsFilteredByName.reduce(
           (prevAmount, currMovement) => {
-            return currMovement.amount + prevAmount;
+            if (currMovement.movement_type === 'redemption') {
+              return (
+                Math.round((prevAmount - Number(currMovement.amount)) * 100) /
+                100
+              );
+            }
+            return (
+              Math.round((prevAmount + Number(currMovement.amount)) * 100) / 100
+            );
           },
           0,
         );
