@@ -1,5 +1,7 @@
 import { getRepository } from 'typeorm';
 
+import AppError from '../errors/AppError';
+
 import Movement from '../models/Movement';
 import Category from '../models/Category';
 
@@ -26,12 +28,16 @@ class CreateMovementService {
     const movementsRepository = getRepository(Movement);
     const categoriesRepository = getRepository(Category);
 
-    const hasCategory = categoriesRepository.findOne({
+    if (!category_id) {
+      throw new AppError('category_id not defined.', 400);
+    }
+
+    const hasCategory = await categoriesRepository.findOne({
       where: { id: category_id },
     });
 
     if (!hasCategory) {
-      throw new Error('Category not found.');
+      throw new AppError('Category not found.', 400);
     }
 
     const amountVaryByCategory = amount || 1;
@@ -43,7 +49,7 @@ class CreateMovementService {
       category_id,
       movement_date: parsedDate,
       financial_institution,
-      value_applied,
+      value_applied: Number(value_applied),
       movement_type,
       amount: amountVaryByCategory,
     });

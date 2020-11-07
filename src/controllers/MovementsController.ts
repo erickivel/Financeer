@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 
 import CreateMovementService from '../services/CreateMovementService';
+import ListMovementsService from '../services/ListMovementsService';
 
 export default class MovementsController {
   public async create(request: Request, response: Response): Promise<Response> {
@@ -27,5 +28,13 @@ export default class MovementsController {
     });
 
     return response.json(movement);
+  }
+
+  public async index(request: Request, response: Response): Promise<Response> {
+    const listMovementsService = new ListMovementsService();
+
+    const movementsWithCategory = await listMovementsService.execute();
+
+    return response.json(movementsWithCategory);
   }
 }

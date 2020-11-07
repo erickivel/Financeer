@@ -33,7 +33,7 @@ class Movement {
   @Column()
   financial_institution: string;
 
-  @Column('decimal')
+  @Column()
   value_applied: number;
 
   @Column()
