@@ -10,7 +10,7 @@ export default class MovementsController {
       category_id,
       movement_date,
       financial_institution,
-      value_applied,
+      movement_value,
       movement_type,
       amount,
     } = request.body;
@@ -22,7 +22,7 @@ export default class MovementsController {
       category_id,
       movement_date,
       financial_institution,
-      value_applied,
+      movement_value,
       movement_type,
       amount,
     });

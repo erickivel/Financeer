@@ -8,7 +8,7 @@ interface MovementWithCategory {
   category_id: string;
   movement_date: Date;
   financial_institution: string;
-  value_applied: number;
+  movement_value: number;
   movement_type: 'application' | 'redemption';
   amount: number;
   category: Category | undefined;

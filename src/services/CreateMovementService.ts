@@ -10,9 +10,9 @@ interface IRequest {
   category_id: string;
   movement_date: Date;
   financial_institution: string;
-  value_applied: number;
+  movement_value: number;
   movement_type: 'application' | 'redemption';
-  amount?: number;
+  amount: number;
 }
 
 class CreateMovementService {
@@ -21,7 +21,7 @@ class CreateMovementService {
     category_id,
     movement_date,
     financial_institution,
-    value_applied,
+    movement_value,
     movement_type,
     amount,
   }: IRequest): Promise<Movement> {
@@ -40,7 +40,25 @@ class CreateMovementService {
       throw new AppError('Category not found.', 400);
     }
 
-    const amountVaryByCategory = amount || 1;
+    const movements = await movementsRepository.find({
+      where: { product_name },
+    });
+
+    const productTotalAmount = movements.reduce((prevValue, currMovement) => {
+      if (currMovement.movement_type === 'redemption') {
+        return (
+          Math.round((prevValue - Number(currMovement.amount)) * 100) / 100
+        );
+      }
+      return Math.round((prevValue + Number(currMovement.amount)) * 100) / 100;
+    }, 0);
+
+    if (productTotalAmount < movement_value && movement_type === 'redemption') {
+      throw new AppError(
+        'the total value of the amount is less than the redemption',
+        400,
+      );
+    }
 
     const parsedDate = new Date(movement_date);
 
@@ -49,9 +67,9 @@ class CreateMovementService {
       category_id,
       movement_date: parsedDate,
       financial_institution,
-      value_applied: Number(value_applied),
+      movement_value: Number(movement_value),
       movement_type,
-      amount: amountVaryByCategory,
+      amount,
     });
 
     await movementsRepository.save(movement);

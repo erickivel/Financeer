@@ -8,7 +8,7 @@ interface MovementWithCategory {
   category_id: string;
   movement_date: Date;
   financial_institution: string;
-  value_applied: number;
+  movement_value: number;
   movement_type: 'application' | 'redemption';
   amount: number;
   category: Category | undefined;
@@ -26,7 +26,7 @@ class MovementsRepository extends Repository<Movement> {
     const movementsWithCategory = movements.map(movement => {
       return {
         ...movement,
-        value_applied: Number(movement.value_applied),
+        movement_value: Number(movement.movement_value),
         category: categories.find(
           category => category.id === movement.category_id,
         ),

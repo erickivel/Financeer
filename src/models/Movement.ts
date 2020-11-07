@@ -34,7 +34,7 @@ class Movement {
   financial_institution: string;
 
   @Column()
-  value_applied: number;
+  movement_value: number;
 
   @Column()
   movement_type: 'application' | 'redemption';

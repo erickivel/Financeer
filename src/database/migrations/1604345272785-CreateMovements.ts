@@ -31,7 +31,7 @@ export default class CreateMovements1604345272785
             type: 'varchar',
           },
           {
-            name: 'value_applied',
+            name: 'movement_value',
             type: 'decimal',
             precision: 10,
             scale: 2,
