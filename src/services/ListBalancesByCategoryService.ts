@@ -8,13 +8,30 @@ interface CategoryBalance {
   category_percentage: number;
 }
 
+interface CategoryBalanceWithTotal {
+  categoriesBalances: CategoryBalance[];
+  total: number;
+}
+
 class ListBalancesByCategoryService {
-  public async execute(): Promise<CategoryBalance[]> {
+  public async execute(): Promise<CategoryBalanceWithTotal> {
     const movementsRepository = getCustomRepository(MovementsRepository);
+
+    const balancesWithAmount = await movementsRepository.getAllBallancesByProductName();
 
     const movementsWithCategory = await movementsRepository.findWithCategory();
 
-    const movementsCategories = movementsWithCategory.map(movement => {
+    const movementsWithCategoryAndAmount = movementsWithCategory.filter(
+      movement => {
+        const hasAmount = balancesWithAmount.find(
+          balance => balance.product_name === movement.product_name,
+        );
+
+        return movement.product_name === hasAmount?.product_name;
+      },
+    );
+
+    const movementsCategories = movementsWithCategoryAndAmount.map(movement => {
       return movement.category?.name;
     });
 
@@ -25,7 +42,7 @@ class ListBalancesByCategoryService {
 
     const categoriesBalance = movementsWithoutDuplicateCategories.map(
       category_name => {
-        const movementsFilteredByCategory = movementsWithCategory.filter(
+        const movementsFilteredByCategory = movementsWithCategoryAndAmount.filter(
           movement => movement.category?.name === category_name,
         );
 
@@ -66,7 +83,8 @@ class ListBalancesByCategoryService {
           0,
         );
 
-        const category_percentage = numerator / denominator;
+        const category_percentage =
+          Math.round((numerator / denominator) * 10000) / 100;
 
         return {
           ...category_balance,
@@ -75,7 +93,17 @@ class ListBalancesByCategoryService {
       },
     );
 
-    return categoriesBalanceWithPercentage;
+    const total = categoriesBalanceWithPercentage.reduce(
+      (prevValue, currBalance) => {
+        return currBalance.total_value_invested + prevValue;
+      },
+      0,
+    );
+
+    return {
+      categoriesBalances: categoriesBalanceWithPercentage,
+      total,
+    };
   }
 }
 
