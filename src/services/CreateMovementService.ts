@@ -53,17 +53,23 @@ class CreateMovementService {
       return Math.round((prevValue + Number(currMovement.amount)) * 100) / 100;
     }, 0);
 
-    if (productTotalAmount < movement_value && movement_type === 'redemption') {
+    if (amount <= 0) {
+      throw new AppError('The amount must be greater than 0', 400);
+    }
+
+    if (productTotalAmount < amount && movement_type === 'redemption') {
       throw new AppError(
-        'the total value of the amount is less than the redemption',
+        'The total value of the amount is less than the redemption',
         400,
       );
     }
 
+    const parsedProductName = product_name.toUpperCase();
+
     const parsedDate = new Date(movement_date);
 
     const movement = movementsRepository.create({
-      product_name,
+      product_name: parsedProductName,
       category_id,
       movement_date: parsedDate,
       financial_institution,
