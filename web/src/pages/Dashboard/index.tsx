@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import { Doughnut } from 'react-chartjs-2';
 
 import { ChartData } from 'chart.js';
 
 import Header from '../../components/Header';
+import Input from '../../components/Input';
 
 import formatValue from '../../utils/formatValue';
 
@@ -16,7 +17,12 @@ import {
   CategoryItem,
   TotalContainer,
   RegisterSection,
+  ButtonsMovementType,
 } from './styles';
+
+interface Movement {
+  movement_type: 'application' | 'redemption';
+}
 
 const Dashboard: React.FC = () => {
   const chartData: ChartData = {
@@ -30,6 +36,10 @@ const Dashboard: React.FC = () => {
       },
     ],
   };
+
+  const [movement_type, setMovementType] = useState<
+    'application' | 'redemption'
+  >();
 
   return (
     <>
@@ -143,7 +153,111 @@ const Dashboard: React.FC = () => {
           </TotalContainer>
         </InvestmentsInformations>
         <RegisterSection>
-          <h1>Asdw</h1>
+          <h2>Registre uma movimentação</h2>
+          <form>
+            <div className="movement-type">
+              <strong>Tipo de Movimentação</strong>
+
+              <ButtonsMovementType buttonSelected={movement_type}>
+                <button
+                  type="button"
+                  className="application-button"
+                  onClick={() => setMovementType('application')}
+                >
+                  Aplicação
+                </button>
+                <button
+                  type="button"
+                  className="redemption-button"
+                  onClick={() => setMovementType('redemption')}
+                >
+                  Resgate
+                </button>
+              </ButtonsMovementType>
+            </div>
+            {movement_type === 'application' && (
+              <>
+                <div className="movement_data">
+                  <Input
+                    scale="large"
+                    name="financial-institution"
+                    label="Instituição Financeira"
+                    placeholder="Onde foi realizada a movimentação"
+                  />
+                  <Input
+                    scale="small"
+                    name="product-name"
+                    label="Ticker do ativo"
+                    placeholder="Ex: ITSA4"
+                  />
+                  <Input
+                    scale="small"
+                    name="amount"
+                    label="Quantidade"
+                    placeholder="Quantidade de cotas"
+                  />
+                  <Input
+                    scale="small"
+                    name="movement_value"
+                    label="Preço de compra"
+                    placeholder="Insira o preço total"
+                  />
+                  <Input
+                    scale="small"
+                    name="movement_date"
+                    label="Data da compra"
+                    placeholder="dd/mm/aaaa"
+                  />
+                  <Input
+                    scale="large"
+                    name="category"
+                    label="Categoria do ativo"
+                    placeholder="Ex: Ações, Fiis, BDRs, ETFs"
+                  />
+                </div>
+
+                <button type="submit">Confirmar</button>
+              </>
+            )}
+            {movement_type === 'redemption' && (
+              <>
+                <div className="movement_data">
+                  <Input
+                    scale="large"
+                    name="financial-institution"
+                    label="Instituição Financeira"
+                    placeholder="Onde foi realizada a movimentação"
+                  />
+                  <Input
+                    scale="small"
+                    name="product-name"
+                    label="Ticker do ativo"
+                    placeholder="Ex: ITSA4"
+                  />
+                  <Input
+                    scale="small"
+                    name="amount"
+                    label="Quantidade"
+                    placeholder="Quantidade de cotas"
+                  />
+                  <Input
+                    scale="small"
+                    name="movement_value"
+                    label="Preço de Venda"
+                    placeholder="Insira o preço total"
+                  />
+                  <Input
+                    scale="small"
+                    name="movement_date"
+                    label="Data da venda"
+                    placeholder="dd/mm/aaaa"
+                  />
+                </div>
+
+                <button type="submit">Confirmar</button>
+              </>
+            )}
+          </form>
         </RegisterSection>
       </Container>
     </>
