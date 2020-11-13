@@ -60,8 +60,8 @@ export const Container = styled.div<ContainerProps>`
         }
       }
 
-      ${props =>
-        css`
+      ${props => {
+        return css`
           a.${props.selected} {
           opacity: 1;
 
@@ -75,7 +75,8 @@ export const Container = styled.div<ContainerProps>`
             margin: 0 auto;
             width: 100%;
           }
-        `}
+        `;
+      }}
     }
   }
 `;
