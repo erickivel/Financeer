@@ -13,7 +13,7 @@ const Header: React.FC = () => {
   const { pathname } = useLocation();
 
   useEffect(() => {
-    const location = pathname.slice(1);
+    const location = pathname === '/' ? 'adicionar' : pathname.slice(1);
 
     setButtonSelected(location);
   }, [pathname]);
@@ -21,11 +21,11 @@ const Header: React.FC = () => {
   return (
     <Container selected={buttonSelected}>
       <header>
-        <Link to="/adicionar">
+        <Link to="/">
           <img src={LogoImg} alt="Financeer" />
         </Link>
         <nav>
-          <Link to="/adicionar" className="adicionar">
+          <Link to="/" className="adicionar">
             <FiPlus size={20} color="#F4EDE8" strokeWidth={1.5} />
             Adicionar
           </Link>
@@ -33,7 +33,7 @@ const Header: React.FC = () => {
             <FiFileText size={20} color="#F4EDE8" strokeWidth={1.5} />
             Extrato
           </Link>
-          <Link to="/meus-produtos" className="produtos">
+          <Link to="/meus-produtos" className="meus-produtos">
             <FiPieChart size={20} color="#F4EDE8" strokeWidth={1.5} />
             Meus Produtos
           </Link>
