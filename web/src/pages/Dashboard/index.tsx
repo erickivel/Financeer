@@ -20,10 +20,6 @@ import {
   ButtonsMovementType,
 } from './styles';
 
-interface Movement {
-  movement_type: 'application' | 'redemption';
-}
-
 const Dashboard: React.FC = () => {
   const chartData: ChartData = {
     labels: ['Ações', 'Fundos Imobilários', 'ETFs', 'BDRs'],

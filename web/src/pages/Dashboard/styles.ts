@@ -8,24 +8,39 @@ interface ButtonsMovementTypeProps {
 
 export const Container = styled.div`
   max-width: 1120px;
-  height: 80vh;
   width: 100%;
+
   margin: 0 auto;
   padding: 53px 0 0;
 
-  display: grid;
-  grid-template-columns: 2fr 1fr;
-  grid-gap: 96px;
+  display: flex;
+  justify-content: space-between;
+
+  @media (max-width: 1150px) {
+    & {
+      display: flex;
+      flex-direction: column;
+
+      align-items: center;
+    }
+  }
 `;
 
 export const InvestmentsInformations = styled.div`
   background: #f4ede8;
   padding: 12px 32px 58px 32px;
   border-radius: 15px;
+  max-height: 696px;
+  height: 100%;
+
+  @media (max-width: 680px) {
+    max-height: none;
+  }
 `;
 
 export const CategoriesSection = styled.section`
   display: flex;
+  justify-content: space-between;
 
   div {
     .categories-title {
@@ -38,6 +53,11 @@ export const CategoriesSection = styled.section`
     canvas {
       margin: 12px 30px 0 32px;
     }
+  }
+
+  @media (max-width: 680px) {
+    flex-direction: column;
+    align-items: center;
   }
 `;
 
@@ -83,7 +103,7 @@ export const CategoryItem = styled.div`
 `;
 
 export const TotalContainer = styled.div`
-  margin: 96px 32px 0;
+  margin: 96px 32px 18px;
   padding-top: 72px;
 
   position: relative;
@@ -113,6 +133,8 @@ export const RegisterSection = styled.section`
   border-radius: 15px;
   padding: 32px;
   width: 384px;
+  max-height: 696px;
+  height: 100%;
 
   h2 {
     font-family: 'Poppins';
