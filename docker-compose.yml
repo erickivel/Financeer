@@ -3,6 +3,7 @@ version: "3"
 services:
   react-app:
     build: ./web
+    container_name: web-financeer
     stdin_open: true
     ports:
       - "3000:3000"
@@ -11,6 +12,7 @@ services:
     command: yarn start  
   api-server:
     build: ./server
+    container_name: server-financeer
     ports:
       - "3333:3333"
     environment:
@@ -26,6 +28,7 @@ services:
       - mysql-db
   mysql-db:
     image: mysql:5.7
+    container_name: db-financeer
     restart: always
     ports:
       - "3306:3306"
