@@ -1,0 +1,40 @@
+version: "3"
+
+services:
+  react-app:
+    build: ./web
+    stdin_open: true
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./web:/usr/app
+    command: yarn start  
+  api-server:
+    build: ./server
+    ports:
+      - "3333:3333"
+    environment:
+      DB_HOST: mysql-db
+      DB_PORT: 3306
+      DB_USERNAME: "root"
+      DB_PASSWORD: "docker"
+      DB_DATABASE: "app-db"
+    command: sh -c "yarn typeorm migration:run && yarn dev:server"
+    volumes:
+      - ./server:/usr/app
+    links:
+      - mysql-db
+  mysql-db:
+    image: mysql:5.7
+    restart: always
+    ports:
+      - "3306:3306"
+    volumes:
+      - db-data:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: "docker"
+      MYSQL_USER: "root"
+      MYSQL_PASSWORD: "docker"
+      MYSQL_DATABASE: "app-db"
+volumes:
+  db-data: {}

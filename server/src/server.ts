@@ -32,6 +32,6 @@ app.use((err: Error, request: Request, response: Response, _: NextFunction) => {
   });
 });
 
-app.listen(3333, () => {
+app.listen(3333, '0.0.0.0',() => {
   console.log('🚀 Server started on port 3333!');
 });
