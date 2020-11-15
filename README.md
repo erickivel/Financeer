@@ -27,7 +27,7 @@ Note: If `docker-compose up` or `docker-compose down` doesn't work run respectiv
 1. Move to the web directory: `cd web`
 2. Run `yarn` or `npm install` to install the dependencies
 3. Run `yarn start` or `npm run start` to start the web application
-4. Web runs on http://localhost:3000
+4. The web application runs on http://localhost:3000
 
 ## :memo: License
 
