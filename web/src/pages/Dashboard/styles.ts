@@ -156,6 +156,38 @@ export const RegisterSection = styled.section`
       }
     }
 
+    .react-select__value-container--is--selected {
+      border-color: red;
+    }
+
+    div.react-select-container {
+      .react-select__control {
+        background: #dad5d5;
+        font-size: 14px;
+        color: #8c8986;
+        border-radius: 7px;
+        border: 0;
+
+        &:hover {
+          border-color: #636363;
+        }
+      }
+
+      .react-select__menu {
+        background: #dad5d5;
+        color: #464141;
+
+        .react-select__option--is-selected {
+          background: ${shade(0.2, '#dad5d5')};
+          color: #f4ede8;
+        }
+
+        .react-select__option--is-focused {
+          background: ${shade(1.3, '#dad5d5')};
+        }
+      }
+    }
+
     .movement_data {
       margin-top: 32px;
       display: grid;
