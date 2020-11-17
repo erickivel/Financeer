@@ -2,6 +2,7 @@ import styled, { css } from 'styled-components';
 
 interface ContainerProps {
   scale: 'small' | 'large';
+  type: string;
 }
 
 export const Container = styled.div<ContainerProps>`
@@ -23,7 +24,7 @@ export const Container = styled.div<ContainerProps>`
     width: ${props => (props.scale === 'small' ? css`152px` : css`320px`)};
 
     margin-top: 8px;
-    padding: 12px 8px;
+    padding: ${props => (props.type === 'date' ? '22px 8px' : '12px 8px')};
     background: #dad5d5;
     border: 0;
     border-radius: 7px;
