@@ -1,3 +1,7 @@
+<h1 align="center">
+    <img src="./assets/logo.svg" alt="Financeer Logo" width="35%">
+</h1>
+
 # Getting Started
 
 ## :rocket: Getting started with Docker
