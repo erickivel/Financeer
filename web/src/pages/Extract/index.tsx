@@ -1,10 +1,17 @@
 import React from 'react';
+import { format, parseISO } from 'date-fns';
+import ptBR from 'date-fns/locale/pt-BR';
+
+import { useExtract } from '../../hooks/extract';
+import formatValue from '../../utils/formatValue';
 
 import Header from '../../components/Header';
 
 import { Container, TableContainer } from './styles';
 
 const Extract: React.FC = () => {
+  const { movements } = useExtract();
+
   return (
     <>
       <Header />
@@ -25,24 +32,27 @@ const Extract: React.FC = () => {
             </thead>
 
             <tbody>
-              <tr>
-                <td>ITSA4</td>
-                <td>12432</td>
-                <td className="application">R$ 12423,12</td>
-                <td>Ações</td>
-                <td className="application">Aplicação</td>
-                <td>Rico</td>
-                <td>14/11/2020</td>
-              </tr>
-              <tr>
-                <td>ITSA4</td>
-                <td>12432</td>
-                <td className="redemption">R$ 1241,12</td>
-                <td>Ações</td>
-                <td className="redemption">Resgate</td>
-                <td>Rico</td>
-                <td>14/11/2020</td>
-              </tr>
+              {movements.map(movement => (
+                <tr key={movement.id}>
+                  <td>{movement.product_name}</td>
+                  <td>{movement.amount}</td>
+                  <td className={movement.movement_type}>
+                    {formatValue(movement.movement_value)}
+                  </td>
+                  <td>{movement.category.name}</td>
+                  <td className={movement.movement_type}>
+                    {movement.movement_type === 'redemption'
+                      ? 'Resgate'
+                      : 'Aplicação'}
+                  </td>
+                  <td>{movement.financial_institution}</td>
+                  <td>
+                    {format(parseISO(movement.movement_date), 'dd/MM/yyyy', {
+                      locale: ptBR,
+                    })}
+                  </td>
+                </tr>
+              ))}
             </tbody>
           </table>
         </TableContainer>
