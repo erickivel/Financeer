@@ -1,3 +1,4 @@
+import { shade } from 'polished';
 import styled from 'styled-components';
 
 export const Container = styled.div`
@@ -64,6 +65,7 @@ export const TableContainer = styled.div`
 export const CategoriesSection = styled.section`
   display: flex;
   justify-content: space-between;
+  min-height: 344px;
 
   background: #f4ede8;
   border-radius: 15px;
@@ -80,7 +82,7 @@ export const CategoriesSection = styled.section`
     }
 
     canvas {
-      margin: 39px 5px 0 16px;
+      margin: 39px 9px 0 8px;
     }
   }
 
@@ -99,6 +101,15 @@ export const CategoryItemContainer = styled.section`
 `;
 
 export const CategoryItem = styled.div`
+  border-radius: 7px;
+  padding: 4px;
+  transition: background-color 0.3s;
+  cursor: pointer;
+
+  &:hover {
+    background: ${shade(0.1, '#dedcdc')};
+  }
+
   strong:first-child {
     font-size: 16px;
     font-weight: 500;

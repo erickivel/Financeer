@@ -1,12 +1,11 @@
 import React from 'react';
-
 import { Doughnut } from 'react-chartjs-2';
-
 import { ChartData } from 'chart.js';
 
-import Header from '../../components/Header';
-
+import { useExtract } from '../../hooks/extract';
 import formatValue from '../../utils/formatValue';
+
+import Header from '../../components/Header';
 
 import {
   Container,
@@ -17,12 +16,18 @@ import {
 } from './styles';
 
 const MyProducts: React.FC = () => {
+  const { categoriesBalance, balancesByName } = useExtract();
+
   const chartData: ChartData = {
-    labels: ['Ações', 'Fundos Imobilários', 'ETFs', 'BDRs'],
+    labels: categoriesBalance.categoriesBalances.map(
+      balance => balance.category_name,
+    ),
     datasets: [
       {
         label: 'categorias',
-        data: [864, 1234, 1234, 1243],
+        data: categoriesBalance.categoriesBalances.map(
+          balance => balance.total_value_invested,
+        ),
         backgroundColor: ['#3A49D0', '#3396CE', '#793BC9', '#2CA487'],
         borderWidth: 0,
       },
@@ -47,18 +52,16 @@ const MyProducts: React.FC = () => {
               </thead>
 
               <tbody>
-                <tr>
-                  <td>ITSA4</td>
-                  <td>12432</td>
-                  <td className="value-applied">R$ 12423,12</td>
-                  <td>Ações</td>
-                </tr>
-                <tr>
-                  <td>IVVB11</td>
-                  <td>12432</td>
-                  <td className="value-applied">R$ 1241,12</td>
-                  <td>Fundos Imobilários</td>
-                </tr>
+                {balancesByName.map(balance => (
+                  <tr>
+                    <td>{balance.product_name}</td>
+                    <td>{balance.total_amount}</td>
+                    <td className="value-applied">
+                      {formatValue(balance.total_value_invested)}
+                    </td>
+                    <td>{balance.category}</td>
+                  </tr>
+                ))}
               </tbody>
             </table>
           </TableContainer>
@@ -109,58 +112,25 @@ const MyProducts: React.FC = () => {
               />
             </div>
             <CategoryItemContainer>
-              <CategoryItem>
-                <strong>AÇÕES</strong>
-                <section>
-                  <div>
-                    <small>Saldo na categoria</small>
-                    <strong>R$ 1463,12</strong>
-                  </div>
-                  <div>
-                    <small>% carteira</small>
-                    <strong>45,15</strong>
-                  </div>
-                </section>
-              </CategoryItem>
-              <CategoryItem>
-                <strong>Fundos Imobilários</strong>
-                <section>
-                  <div>
-                    <small>Saldo na categoria</small>
-                    <strong>R$ 1463,12</strong>
-                  </div>
-                  <div>
-                    <small>% carteira</small>
-                    <strong>45,15</strong>
-                  </div>
-                </section>
-              </CategoryItem>
-              <CategoryItem>
-                <strong>ETFs</strong>
-                <section>
-                  <div>
-                    <small>Saldo na categoria</small>
-                    <strong>R$ 1463,12</strong>
-                  </div>
-                  <div>
-                    <small>% carteira</small>
-                    <strong>45,15</strong>
-                  </div>
-                </section>
-              </CategoryItem>
-              <CategoryItem>
-                <strong>BDRs</strong>
-                <section>
-                  <div>
-                    <small>Saldo na categoria</small>
-                    <strong>R$ 1463,12</strong>
-                  </div>
-                  <div>
-                    <small>% carteira</small>
-                    <strong>45,15</strong>
-                  </div>
-                </section>
-              </CategoryItem>
+              {categoriesBalance.categoriesBalances.map(balance => (
+                <CategoryItem
+                  onClick={() => console.log(balance.category_name)}
+                >
+                  <strong>{balance.category_name}</strong>
+                  <section>
+                    <div>
+                      <small>Saldo na categoria</small>
+                      <strong>
+                        {formatValue(balance.total_value_invested)}
+                      </strong>
+                    </div>
+                    <div>
+                      <small>% carteira</small>
+                      <strong>{balance.category_percentage}</strong>
+                    </div>
+                  </section>
+                </CategoryItem>
+              ))}
             </CategoryItemContainer>
           </CategoriesSection>
         </div>
