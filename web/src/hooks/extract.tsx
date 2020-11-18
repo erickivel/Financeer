@@ -13,13 +13,14 @@ interface Category {
 }
 
 interface Movement {
+  id: string;
   product_name: string;
-  category_id: string;
-  movement_date: Date;
+  movement_date: string;
   financial_institution: string;
   movement_value: number;
   movement_type: 'application' | 'redemption';
   amount: number;
+  category: Category;
 }
 
 interface CategoryBalance {
@@ -37,6 +38,7 @@ interface BalanceByName {
   product_name: string;
   total_value_invested: number;
   total_amount: number;
+  category: string;
 }
 
 interface MovementRequestData {
@@ -79,22 +81,42 @@ const ExtractProvider: React.FC = ({ children }) => {
       setCategoriesBalance(response.data);
     }
 
-    async function loadMovements(): Promise<void> {
-      const response = await api.get('/movements');
+    async function loadMovementsAndBalancesByName(): Promise<void> {
+      const movementsResponse = await api.get('/movements');
 
-      const movementsRequest: Movement[] = response.data;
+      const movementsData: Movement[] = movementsResponse.data;
 
-      const productNamesWithoutDuplicates = movementsRequest
+      const productNamesWithoutDuplicates = movementsData
         .map(movement => movement.product_name)
         .filter((product_name, index) => {
           return (
-            movementsRequest
+            movementsData
               .map(movement => movement.product_name)
               .indexOf(product_name) === index
           );
         });
 
-      setMovements(movementsRequest);
+      const balancesByNameResponse = await api.get('/balance/name');
+
+      const balancesByNameData: BalanceByName[] = balancesByNameResponse.data;
+
+      const balancesByNameDataWithCategory = balancesByNameData.map(balance => {
+        const balanceCategory = movementsData.find(
+          movement => movement.product_name === balance.product_name,
+        ) || {
+          category: {
+            name: 'Não definida',
+          },
+        };
+
+        return {
+          ...balance,
+          category: balanceCategory.category.name,
+        };
+      });
+
+      setBalancesByName(balancesByNameDataWithCategory);
+      setMovements(movementsData);
       setProductNames(productNamesWithoutDuplicates);
     }
 
@@ -104,16 +126,9 @@ const ExtractProvider: React.FC = ({ children }) => {
       setCategoryNames(response.data);
     }
 
-    async function loadBalancesByName(): Promise<void> {
-      const response = await api.get('/balance/name');
-
-      setBalancesByName(response.data);
-    }
-
     loadCategoriesBalance();
-    loadMovements();
+    loadMovementsAndBalancesByName();
     loadCategoryNames();
-    loadBalancesByName();
   }, []);
 
   const createMovement = useCallback(
@@ -140,6 +155,8 @@ const ExtractProvider: React.FC = ({ children }) => {
     },
     [movements],
   );
+
+  // const filterBalancesByNameByCategory = useCallback(() => {}, []);
 
   const value = React.useMemo(
     () => ({
