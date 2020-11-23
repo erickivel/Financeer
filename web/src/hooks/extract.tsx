@@ -38,7 +38,7 @@ interface BalanceByName {
   product_name: string;
   total_value_invested: number;
   total_amount: number;
-  category: string;
+  category_name: string;
 }
 
 interface MovementRequestData {
@@ -58,6 +58,7 @@ interface ExtractContext {
   categoryNames: Category[];
   balancesByName: BalanceByName[];
   createMovement(data: MovementRequestData): Promise<void>;
+  filterBalancesByNameByCategory(category_name: string | null): void;
 }
 
 const ExtractContext = createContext<ExtractContext | null>(null);
@@ -73,6 +74,9 @@ const ExtractProvider: React.FC = ({ children }) => {
   const [productNames, setProductNames] = useState(['']);
   const [categoryNames, setCategoryNames] = useState<Category[]>([]);
   const [balancesByName, setBalancesByName] = useState<BalanceByName[]>([]);
+  const [balancesByNameToBeFiltered, setBalancesByNameToBeFiltered] = useState<
+    BalanceByName[]
+  >([]);
 
   useEffect(() => {
     async function loadCategoriesBalance(): Promise<void> {
@@ -111,11 +115,12 @@ const ExtractProvider: React.FC = ({ children }) => {
 
         return {
           ...balance,
-          category: balanceCategory.category.name,
+          category_name: balanceCategory.category.name,
         };
       });
 
       setBalancesByName(balancesByNameDataWithCategory);
+      setBalancesByNameToBeFiltered(balancesByNameDataWithCategory);
       setMovements(movementsData);
       setProductNames(productNamesWithoutDuplicates);
     }
@@ -156,7 +161,20 @@ const ExtractProvider: React.FC = ({ children }) => {
     [movements],
   );
 
-  // const filterBalancesByNameByCategory = useCallback(() => {}, []);
+  const filterBalancesByNameByCategory = useCallback(
+    (category_name: string | null) => {
+      if (category_name !== null) {
+        const balancesByNameFilteredByCategory = balancesByNameToBeFiltered.filter(
+          balance => balance.category_name === category_name,
+        );
+
+        setBalancesByName(balancesByNameFilteredByCategory);
+      } else {
+        setBalancesByName(balancesByNameToBeFiltered);
+      }
+    },
+    [balancesByNameToBeFiltered],
+  );
 
   const value = React.useMemo(
     () => ({
@@ -166,6 +184,7 @@ const ExtractProvider: React.FC = ({ children }) => {
       categoryNames,
       balancesByName,
       createMovement,
+      filterBalancesByNameByCategory,
     }),
     [
       categoriesBalance,
@@ -174,6 +193,7 @@ const ExtractProvider: React.FC = ({ children }) => {
       categoryNames,
       balancesByName,
       createMovement,
+      filterBalancesByNameByCategory,
     ],
   );
 
