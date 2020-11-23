@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { FormEvent, useCallback, useState } from 'react';
 import { Doughnut } from 'react-chartjs-2';
 import { ChartData } from 'chart.js';
-import Select from 'react-select';
+import Select, { ValueType, ActionMeta } from 'react-select';
 
 import { useExtract } from '../../hooks/extract';
 
@@ -21,8 +21,55 @@ import {
   ButtonsMovementType,
 } from './styles';
 
+type MyOptionType = { label: string; value: number };
+
+type OnChange = (
+  value: ValueType<MyOptionType>,
+  actionMeta: ActionMeta<MyOptionType>,
+) => void;
+
 const Dashboard: React.FC = () => {
-  const { categoriesBalance } = useExtract();
+  const { categoriesBalance, categoryNames } = useExtract();
+
+  const [movement_type, setMovementType] = useState<
+    'application' | 'redemption'
+  >();
+  const [product_name, setProductName] = useState('');
+  const [movement_date, setMovementDate] = useState('');
+  const [financial_institution, setFinancialInstitution] = useState('');
+  const [movement_value, setMovementValue] = useState('');
+  const [amount, setAmount] = useState('');
+  const [categoryName, setCategoryName] = useState<MyOptionType>({
+    label: '',
+    value: 0,
+  });
+
+  const handleFormSubmit = useCallback(
+    (event: FormEvent) => {
+      event.preventDefault();
+
+      console.log(movement_type);
+      console.log(financial_institution);
+      console.log(product_name);
+      console.log(amount);
+      console.log(movement_value);
+      console.log(movement_date);
+      console.log(categoryName.label);
+    },
+    [
+      movement_type,
+      financial_institution,
+      product_name,
+      amount,
+      movement_value,
+      movement_date,
+      categoryName,
+    ],
+  );
+
+  const selectOptions = categoryNames.map((category, index) => {
+    return { value: index, label: category.name } as MyOptionType;
+  });
 
   const chartData: ChartData = {
     labels: categoriesBalance.categoriesBalances.map(
@@ -41,10 +88,6 @@ const Dashboard: React.FC = () => {
       },
     ],
   };
-
-  const [movement_type, setMovementType] = useState<
-    'application' | 'redemption'
-  >();
 
   return (
     <>
@@ -124,11 +167,7 @@ const Dashboard: React.FC = () => {
         </InvestmentsInformations>
         <RegisterSection>
           <h2>Registre uma movimentação</h2>
-          <form
-            onSubmit={() => {
-              console.log('enviou');
-            }}
-          >
+          <form onSubmit={handleFormSubmit}>
             <div className="movement-type">
               <strong>Tipo de Movimentação</strong>
 
@@ -153,6 +192,9 @@ const Dashboard: React.FC = () => {
               <>
                 <div className="movement_data">
                   <Input
+                    required
+                    value={financial_institution}
+                    onChange={e => setFinancialInstitution(e.target.value)}
                     scale="large"
                     type="text"
                     name="financial-institution"
@@ -160,6 +202,9 @@ const Dashboard: React.FC = () => {
                     placeholder="Onde foi realizada a movimentação"
                   />
                   <Input
+                    required
+                    value={product_name}
+                    onChange={e => setProductName(e.target.value)}
                     scale="small"
                     type="text"
                     name="product-name"
@@ -167,6 +212,9 @@ const Dashboard: React.FC = () => {
                     placeholder="Ex: ITSA4"
                   />
                   <Input
+                    required
+                    value={amount}
+                    onChange={e => setAmount(e.target.value)}
                     scale="small"
                     type="number"
                     name="amount"
@@ -174,6 +222,9 @@ const Dashboard: React.FC = () => {
                     placeholder="Quantidade de cotas"
                   />
                   <Input
+                    required
+                    value={movement_value}
+                    onChange={e => setMovementValue(e.target.value)}
                     scale="small"
                     type="number"
                     min="0.01"
@@ -184,6 +235,9 @@ const Dashboard: React.FC = () => {
                     placeholder="Ex: 125.40"
                   />
                   <Input
+                    required
+                    value={movement_date}
+                    onChange={e => setMovementDate(e.target.value)}
                     scale="small"
                     type="date"
                     name="movement_date"
@@ -196,12 +250,9 @@ const Dashboard: React.FC = () => {
                     <Select
                       className="react-select-container"
                       classNamePrefix="react-select"
-                      options={[
-                        { value: 'test', label: 'Test' },
-                        { value: 'test2', label: 'Test2' },
-                        { value: 'test3', label: 'Test3' },
-                        { value: 'test4', label: 'Test4' },
-                      ]}
+                      defaultValue={categoryName}
+                      onChange={setCategoryName as OnChange}
+                      options={selectOptions}
                       placeholder="Escolha uma"
                     />
                   </div>
@@ -214,6 +265,9 @@ const Dashboard: React.FC = () => {
               <>
                 <div className="movement_data">
                   <Input
+                    required
+                    value={financial_institution}
+                    onChange={e => setFinancialInstitution(e.target.value)}
                     scale="large"
                     type="text"
                     name="financial-institution"
@@ -221,6 +275,9 @@ const Dashboard: React.FC = () => {
                     placeholder="Onde foi realizada a movimentação"
                   />
                   <Input
+                    required
+                    value={product_name}
+                    onChange={e => setProductName(e.target.value)}
                     scale="small"
                     type="text"
                     name="product-name"
@@ -228,6 +285,9 @@ const Dashboard: React.FC = () => {
                     placeholder="Ex: ITSA4"
                   />
                   <Input
+                    required
+                    value={amount}
+                    onChange={e => setAmount(e.target.value)}
                     scale="small"
                     type="number"
                     name="amount"
@@ -235,6 +295,9 @@ const Dashboard: React.FC = () => {
                     placeholder="Quantidade de cotas"
                   />
                   <Input
+                    required
+                    value={movement_value}
+                    onChange={e => setMovementValue(e.target.value)}
                     type="number"
                     min="0.01"
                     step="0.01"
@@ -245,6 +308,9 @@ const Dashboard: React.FC = () => {
                     placeholder="Ex: 125.40"
                   />
                   <Input
+                    required
+                    value={movement_date}
+                    onChange={e => setMovementDate(e.target.value)}
                     scale="small"
                     type="date"
                     name="movement_date"

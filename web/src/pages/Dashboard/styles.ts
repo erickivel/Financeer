@@ -156,12 +156,11 @@ export const RegisterSection = styled.section`
       }
     }
 
-    .react-select__value-container--is--selected {
-      border-color: red;
-    }
-
     div.react-select-container {
+      margin-top: 8px;
+
       .react-select__control {
+        height: 43px;
         background: #dad5d5;
         font-size: 14px;
         color: #8c8986;
@@ -223,6 +222,8 @@ export const RegisterSection = styled.section`
 
       .category {
         grid-area: f;
+        font-size: 18px;
+        color: #464141;
       }
     }
 
