@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback, useState } from 'react';
 import { Doughnut } from 'react-chartjs-2';
 import { ChartData } from 'chart.js';
 
@@ -16,7 +16,26 @@ import {
 } from './styles';
 
 const MyProducts: React.FC = () => {
-  const { categoriesBalance, balancesByName } = useExtract();
+  const {
+    categoriesBalance,
+    balancesByName,
+    filterBalancesByNameByCategory,
+  } = useExtract();
+
+  const [categoryFiltered, setCategoryFiltered] = useState<string | null>(null);
+
+  const handleFilterBalances = useCallback(
+    category_name => {
+      if (category_name === categoryFiltered && category_name !== null) {
+        setCategoryFiltered(null);
+        filterBalancesByNameByCategory(null);
+      } else {
+        setCategoryFiltered(category_name);
+        filterBalancesByNameByCategory(category_name);
+      }
+    },
+    [filterBalancesByNameByCategory, categoryFiltered],
+  );
 
   const chartData: ChartData = {
     labels: categoriesBalance.categoriesBalances.map(
@@ -53,13 +72,13 @@ const MyProducts: React.FC = () => {
 
               <tbody>
                 {balancesByName.map(balance => (
-                  <tr>
+                  <tr key={balance.product_name}>
                     <td>{balance.product_name}</td>
                     <td>{balance.total_amount}</td>
                     <td className="value-applied">
                       {formatValue(balance.total_value_invested)}
                     </td>
-                    <td>{balance.category}</td>
+                    <td>{balance.category_name}</td>
                   </tr>
                 ))}
               </tbody>
@@ -111,10 +130,12 @@ const MyProducts: React.FC = () => {
                 }}
               />
             </div>
-            <CategoryItemContainer>
+            <CategoryItemContainer categoryFiltered={categoryFiltered}>
               {categoriesBalance.categoriesBalances.map(balance => (
                 <CategoryItem
-                  onClick={() => console.log(balance.category_name)}
+                  className={balance.category_name}
+                  key={balance.category_name}
+                  onClick={() => handleFilterBalances(balance.category_name)}
                 >
                   <strong>{balance.category_name}</strong>
                   <section>

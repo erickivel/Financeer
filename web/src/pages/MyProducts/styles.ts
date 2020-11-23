@@ -1,5 +1,9 @@
+import styled, { css } from 'styled-components';
 import { shade } from 'polished';
-import styled from 'styled-components';
+
+interface CategoryItemContainerProps {
+  categoryFiltered: string | null;
+}
 
 export const Container = styled.div`
   max-width: 1120px;
@@ -92,12 +96,20 @@ export const CategoriesSection = styled.section`
   }
 `;
 
-export const CategoryItemContainer = styled.section`
+export const CategoryItemContainer = styled.section<CategoryItemContainerProps>`
   margin: 11px;
 
   > div + div {
     margin-top: 32px;
   }
+
+  ${props =>
+    props.categoryFiltered !== null &&
+    css`
+      .${props.categoryFiltered} {
+        background: ${shade(0.1, '#dedcdc')};
+      }
+    `}
 `;
 
 export const CategoryItem = styled.div`
