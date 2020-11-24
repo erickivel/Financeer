@@ -17,6 +17,7 @@ const Extract: React.FC = () => {
       <Header />
       <Container>
         <h1>Extrato</h1>
+
         <TableContainer>
           <table>
             <thead>

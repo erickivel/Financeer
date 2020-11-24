@@ -56,6 +56,7 @@ const MyProducts: React.FC = () => {
   return (
     <>
       <Header />
+
       <Container>
         <h1>Meus Produtos</h1>
         <div className="content">
@@ -84,6 +85,7 @@ const MyProducts: React.FC = () => {
               </tbody>
             </table>
           </TableContainer>
+
           <CategoriesSection>
             <div>
               <strong className="categories-title">Categorias</strong>

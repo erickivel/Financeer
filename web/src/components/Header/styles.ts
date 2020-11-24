@@ -7,6 +7,7 @@ interface ContainerProps {
 export const Container = styled.div<ContainerProps>`
   background: #26a149;
   width: 100%;
+  position: sticky;
 
   header {
     width: 100%;

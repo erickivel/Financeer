@@ -146,7 +146,7 @@ const ExtractProvider: React.FC = ({ children }) => {
       movement_type,
       amount,
     }: MovementRequestData) => {
-      const response = await api.post('/movements', {
+      await api.post('/movements', {
         category_id,
         product_name,
         movement_date,
@@ -160,7 +160,7 @@ const ExtractProvider: React.FC = ({ children }) => {
       loadMovementsAndBalancesByName();
       loadCategoryNames();
     },
-    [movements],
+    [],
   );
 
   const filterBalancesByNameByCategory = useCallback(
