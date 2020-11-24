@@ -156,37 +156,6 @@ export const RegisterSection = styled.section`
       }
     }
 
-    div.react-select-container {
-      margin-top: 8px;
-
-      .react-select__control {
-        height: 43px;
-        background: #dad5d5;
-        font-size: 14px;
-        color: #8c8986;
-        border-radius: 7px;
-        border: 0;
-
-        &:hover {
-          border-color: #636363;
-        }
-      }
-
-      .react-select__menu {
-        background: #dad5d5;
-        color: #464141;
-
-        .react-select__option--is-selected {
-          background: ${shade(0.2, '#dad5d5')};
-          color: #f4ede8;
-        }
-
-        .react-select__option--is-focused {
-          background: ${shade(1.3, '#dad5d5')};
-        }
-      }
-    }
-
     .movement_data {
       margin-top: 32px;
       display: grid;
@@ -200,11 +169,11 @@ export const RegisterSection = styled.section`
         'd e'
         'f f';
 
-      .financial-institution {
+      .financial_institution {
         grid-area: a;
       }
 
-      .product-name {
+      .product_name {
         grid-area: b;
       }
 
@@ -212,11 +181,11 @@ export const RegisterSection = styled.section`
         grid-area: c;
       }
 
-      .movement-value {
+      .movement_value {
         grid-area: d;
       }
 
-      .movement-date {
+      .movement_date {
         grid-area: e;
       }
 
