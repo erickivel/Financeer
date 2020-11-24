@@ -78,59 +78,59 @@ const ExtractProvider: React.FC = ({ children }) => {
     BalanceByName[]
   >([]);
 
-  useEffect(() => {
-    async function loadCategoriesBalance(): Promise<void> {
-      const response = await api.get('/balance/category');
+  async function loadCategoriesBalance(): Promise<void> {
+    const response = await api.get('/balance/category');
 
-      setCategoriesBalance(response.data);
-    }
+    setCategoriesBalance(response.data);
+  }
 
-    async function loadMovementsAndBalancesByName(): Promise<void> {
-      const movementsResponse = await api.get('/movements');
+  async function loadMovementsAndBalancesByName(): Promise<void> {
+    const movementsResponse = await api.get('/movements');
 
-      const movementsData: Movement[] = movementsResponse.data;
+    const movementsData: Movement[] = movementsResponse.data;
 
-      const productNamesWithoutDuplicates = movementsData
-        .map(movement => movement.product_name)
-        .filter((product_name, index) => {
-          return (
-            movementsData
-              .map(movement => movement.product_name)
-              .indexOf(product_name) === index
-          );
-        });
-
-      const balancesByNameResponse = await api.get('/balance/name');
-
-      const balancesByNameData: BalanceByName[] = balancesByNameResponse.data;
-
-      const balancesByNameDataWithCategory = balancesByNameData.map(balance => {
-        const balanceCategory = movementsData.find(
-          movement => movement.product_name === balance.product_name,
-        ) || {
-          category: {
-            name: 'Não definida',
-          },
-        };
-
-        return {
-          ...balance,
-          category_name: balanceCategory.category.name,
-        };
+    const productNamesWithoutDuplicates = movementsData
+      .map(movement => movement.product_name)
+      .filter((product_name, index) => {
+        return (
+          movementsData
+            .map(movement => movement.product_name)
+            .indexOf(product_name) === index
+        );
       });
 
-      setBalancesByName(balancesByNameDataWithCategory);
-      setBalancesByNameToBeFiltered(balancesByNameDataWithCategory);
-      setMovements(movementsData);
-      setProductNames(productNamesWithoutDuplicates);
-    }
+    const balancesByNameResponse = await api.get('/balance/name');
 
-    async function loadCategoryNames(): Promise<void> {
-      const response = await api.get('/categories');
+    const balancesByNameData: BalanceByName[] = balancesByNameResponse.data;
 
-      setCategoryNames(response.data);
-    }
+    const balancesByNameDataWithCategory = balancesByNameData.map(balance => {
+      const balanceCategory = movementsData.find(
+        movement => movement.product_name === balance.product_name,
+      ) || {
+        category: {
+          name: 'Não definida',
+        },
+      };
 
+      return {
+        ...balance,
+        category_name: balanceCategory.category.name,
+      };
+    });
+
+    setBalancesByName(balancesByNameDataWithCategory);
+    setBalancesByNameToBeFiltered(balancesByNameDataWithCategory);
+    setMovements(movementsData);
+    setProductNames(productNamesWithoutDuplicates);
+  }
+
+  async function loadCategoryNames(): Promise<void> {
+    const response = await api.get('/categories');
+
+    setCategoryNames(response.data);
+  }
+
+  useEffect(() => {
     loadCategoriesBalance();
     loadMovementsAndBalancesByName();
     loadCategoryNames();
@@ -145,7 +145,7 @@ const ExtractProvider: React.FC = ({ children }) => {
       movement_value,
       movement_type,
       amount,
-    }) => {
+    }: MovementRequestData) => {
       const response = await api.post('/movements', {
         category_id,
         product_name,
@@ -156,7 +156,9 @@ const ExtractProvider: React.FC = ({ children }) => {
         amount,
       });
 
-      setMovements([...movements, response.data]);
+      loadCategoriesBalance();
+      loadMovementsAndBalancesByName();
+      loadCategoryNames();
     },
     [movements],
   );
@@ -196,6 +198,8 @@ const ExtractProvider: React.FC = ({ children }) => {
       filterBalancesByNameByCategory,
     ],
   );
+
+  console.log(movements);
 
   return (
     <ExtractContext.Provider value={value}>{children}</ExtractContext.Provider>
