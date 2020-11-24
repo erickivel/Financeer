@@ -64,12 +64,10 @@ class CreateMovementService {
       );
     }
 
-    const parsedProductName = product_name.toUpperCase();
-
     const parsedDate = new Date(movement_date);
 
     const movement = movementsRepository.create({
-      product_name: parsedProductName,
+      product_name,
       category_id,
       movement_date: parsedDate,
       financial_institution,
