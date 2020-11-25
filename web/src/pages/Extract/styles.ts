@@ -17,12 +17,32 @@ export const Container = styled.div`
 
 export const TableContainer = styled.div`
   margin-top: 64px;
+  overflow-y: scroll;
+  max-height: 588px;
+  ::-webkit-scrollbar {
+    width: 8px;
+    background-color: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background-color: rgba(140, 137, 134, 0.3);
+    border-radius: 4px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background-color: transparent;
+  }
 
   table {
-    width: 100%;
     border-spacing: 0 8px;
+    width: 100%;
+    position: relative;
 
     th {
+      background-color: #dedcdc;
+      position: sticky;
+      top: 0;
+
       color: #636363;
       font-weight: normal;
       font-family: 'Poppins';
