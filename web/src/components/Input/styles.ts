@@ -26,14 +26,19 @@ export const Container = styled.div<ContainerProps>`
     margin-top: 8px;
     padding: ${props => (props.type === 'date' ? '22px 8px' : '12px 8px')};
     background: #dad5d5;
-    border: 0;
+    border: 1px solid transparent;
     border-radius: 7px;
 
     color: #464141;
+    transition: border-color 0.2s;
 
     &::placeholder {
       font-size: 14px;
       color: #8c8986;
+    }
+
+    &:focus {
+      border-color: #636363;
     }
   }
 `;
