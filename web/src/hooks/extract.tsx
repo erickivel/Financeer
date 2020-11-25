@@ -146,19 +146,26 @@ const ExtractProvider: React.FC = ({ children }) => {
       movement_type,
       amount,
     }: MovementRequestData) => {
-      await api.post('/movements', {
-        category_id,
-        product_name,
-        movement_date,
-        financial_institution,
-        movement_value,
-        movement_type,
-        amount,
-      });
+      try {
+        await api.post('/movements', {
+          category_id,
+          product_name,
+          movement_date,
+          financial_institution,
+          movement_value,
+          movement_type,
+          amount,
+        });
 
-      loadCategoriesBalance();
-      loadMovementsAndBalancesByName();
-      loadCategoryNames();
+        loadCategoriesBalance();
+        loadMovementsAndBalancesByName();
+        loadCategoryNames();
+      } catch (err) {
+        alert(
+          'Ocorreu um erro com o servidor, tente novamente! Obs: A quantidade de cotas informada não pode ser maior do que as cotas que você possui deste ativo',
+        );
+        console.error(err);
+      }
     },
     [],
   );
