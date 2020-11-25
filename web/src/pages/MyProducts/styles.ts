@@ -27,12 +27,32 @@ export const Container = styled.div`
 
 export const TableContainer = styled.div`
   margin-top: 48px;
+  max-height: 622px;
+  overflow-y: scroll;
+
+  ::-webkit-scrollbar {
+    width: 8px;
+    background-color: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background-color: rgba(140, 137, 134, 0.3);
+    border-radius: 4px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background-color: transparent;
+  }
 
   table {
     width: 100%;
     border-spacing: 0 8px;
 
     th {
+      background-color: #dedcdc;
+      position: sticky;
+      top: 0;
+
       color: #636363;
       font-weight: normal;
       font-family: 'Poppins';
@@ -69,7 +89,8 @@ export const TableContainer = styled.div`
 export const CategoriesSection = styled.section`
   display: flex;
   justify-content: space-between;
-  min-height: 344px;
+  height: 100%;
+  max-height: 448px;
 
   background: #f4ede8;
   border-radius: 15px;
@@ -126,6 +147,22 @@ export const CategoryItem = styled.div`
     font-size: 16px;
     font-weight: 500;
     color: #3a49d0;
+  }
+
+  &:nth-child(1) span {
+    color: #3a49d0;
+  }
+
+  &:nth-child(2) span {
+    color: #3396ce;
+  }
+
+  &:nth-child(3) span {
+    color: #793bc9;
+  }
+
+  &:nth-child(4) span {
+    color: #2ca487;
   }
 
   section {

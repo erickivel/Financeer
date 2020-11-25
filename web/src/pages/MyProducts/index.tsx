@@ -79,7 +79,11 @@ const MyProducts: React.FC = () => {
                     <td className="value-applied">
                       {formatValue(balance.total_value_invested)}
                     </td>
-                    <td>{balance.category_name}</td>
+                    <td>
+                      {balance.category_name === 'Fundos Imobiliários'
+                        ? 'Fiis'
+                        : balance.category_name}
+                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -139,7 +143,7 @@ const MyProducts: React.FC = () => {
                   key={balance.category_name}
                   onClick={() => handleFilterBalances(balance.category_name)}
                 >
-                  <strong>{balance.category_name}</strong>
+                  <span>{balance.category_name}</span>
                   <section>
                     <div>
                       <small>Saldo na categoria</small>
