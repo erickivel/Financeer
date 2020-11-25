@@ -73,7 +73,22 @@ export const CategoryItem = styled.div`
   strong:first-child {
     font-size: 16px;
     font-weight: 500;
+  }
+
+  &:nth-child(1) span {
     color: #3a49d0;
+  }
+
+  &:nth-child(2) span {
+    color: #3396ce;
+  }
+
+  &:nth-child(3) span {
+    color: #793bc9;
+  }
+
+  &:nth-child(4) span {
+    color: #2ca487;
   }
 
   section {
@@ -143,18 +158,18 @@ export const RegisterSection = styled.section`
     color: #464141;
   }
 
+  .movement-type {
+    margin-top: 40px;
+
+    strong {
+      font-weight: 500;
+      color: #464141;
+    }
+  }
+
   form {
     display: flex;
     flex-direction: column;
-
-    .movement-type {
-      margin-top: 40px;
-
-      strong {
-        font-weight: 500;
-        color: #464141;
-      }
-    }
 
     .movement_data {
       margin-top: 32px;
@@ -189,8 +204,14 @@ export const RegisterSection = styled.section`
         grid-area: e;
       }
 
-      .category {
+      .category-application {
         grid-area: f;
+        font-size: 18px;
+        color: #464141;
+      }
+
+      .product-name-redemption {
+        grid-area: b;
         font-size: 18px;
         color: #464141;
       }

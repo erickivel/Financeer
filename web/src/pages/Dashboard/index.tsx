@@ -3,7 +3,6 @@ import { Doughnut } from 'react-chartjs-2';
 import { ChartData } from 'chart.js';
 import { FormHandles } from '@unform/core';
 import { Form } from '@unform/web';
-import { da } from 'date-fns/locale';
 import Select from '../../components/Select';
 
 import { useExtract } from '../../hooks/extract';
@@ -35,15 +34,26 @@ interface FormData {
 }
 
 const Dashboard: React.FC = () => {
-  const { categoriesBalance, categoryNames, createMovement } = useExtract();
+  const {
+    categoriesBalance,
+    categoryNames,
+    productNames,
+    movements,
+    createMovement,
+  } = useExtract();
 
-  const formRef = useRef<FormHandles>(null);
+  const applicationFormRef = useRef<FormHandles>(null);
+  const redemptionFormRef = useRef<FormHandles>(null);
   const [movement_type, setMovementType] = useState<
     'application' | 'redemption'
   >('application');
 
-  const selectOptions = categoryNames.map(category => {
+  const categoryApplicationSelectOptions = categoryNames.map(category => {
     return { value: category.id, label: category.name };
+  });
+
+  const productNameRedemptionSelectOptions = productNames.map(name => {
+    return { value: name, label: name };
   });
 
   const chartData: ChartData = {
@@ -67,17 +77,18 @@ const Dashboard: React.FC = () => {
   const switchForm = useCallback(
     (movementTypeToChange: 'application' | 'redemption') => {
       if (movement_type !== movementTypeToChange) {
-        formRef.current?.reset();
+        applicationFormRef.current?.reset();
+        redemptionFormRef.current?.reset();
         setMovementType(movementTypeToChange);
       }
     },
     [movement_type],
   );
 
-  const handleSubmit = useCallback(
+  const handleApplicationFormSubmit = useCallback(
     (data: FormData) => {
       if (data.category_id === undefined) {
-        alert('Preencha o campo de "Categoria"');
+        alert('Preencha o campo "Categoria"');
         return;
       }
 
@@ -92,6 +103,47 @@ const Dashboard: React.FC = () => {
       });
     },
     [createMovement, movement_type],
+  );
+
+  const handleRedemptionFormSubmit = useCallback(
+    (data: FormData) => {
+      if (data.product_name === '') {
+        alert('Preencha o campo "Ticker do ativo"');
+        return;
+      }
+
+      const movementWithEqualProductName = movements.find(
+        movement => movement.product_name === data.product_name,
+      );
+
+      if (!movementWithEqualProductName) {
+        alert('Esse ativo ainda não foi cadastrado!');
+        return;
+      }
+
+      const category_id = movementWithEqualProductName.category.id;
+
+      console.log({
+        category_id,
+        product_name: data.product_name.toUpperCase(),
+        movement_date: new Date(data.movement_date),
+        financial_institution: data.financial_institution,
+        movement_value: Number(data.movement_value),
+        movement_type,
+        amount: Number(data.amount),
+      });
+
+      createMovement({
+        category_id,
+        product_name: data.product_name.toUpperCase(),
+        movement_date: new Date(data.movement_date),
+        financial_institution: data.financial_institution,
+        movement_value: Number(data.movement_value),
+        movement_type,
+        amount: Number(data.amount),
+      });
+    },
+    [createMovement, movement_type, movements],
   );
 
   return (
@@ -148,7 +200,7 @@ const Dashboard: React.FC = () => {
             <CategoryItemContainer>
               {categoriesBalance.categoriesBalances.map(balance => (
                 <CategoryItem key={balance.category_name}>
-                  <strong>{balance.category_name}</strong>
+                  <span className="category-name">{balance.category_name}</span>
                   <section>
                     <div>
                       <small>Saldo na categoria</small>
@@ -172,143 +224,142 @@ const Dashboard: React.FC = () => {
         </InvestmentsInformations>
         <RegisterSection>
           <h2>Registre uma movimentação</h2>
-          <Form
-            ref={formRef}
-            onSubmit={handleSubmit}
-            initialData={{ category_id: 'id' }}
-          >
-            <div className="movement-type">
-              <strong>Tipo de Movimentação</strong>
 
-              <ButtonsMovementType buttonSelected={movement_type}>
-                <button
-                  type="button"
-                  className="application-button"
-                  onClick={() => switchForm('application')}
-                >
-                  Aplicação
-                </button>
-                <button
-                  type="button"
-                  className="redemption-button"
-                  onClick={() => switchForm('redemption')}
-                >
-                  Resgate
-                </button>
-              </ButtonsMovementType>
-            </div>
-            {movement_type === 'application' && (
-              <>
-                <div className="movement_data">
-                  <Input
-                    required
-                    scale="large"
-                    type="text"
-                    name="financial_institution"
-                    label="Instituição Financeira"
-                    placeholder="Onde foi realizada a movimentação"
-                  />
-                  <Input
-                    required
-                    scale="small"
-                    type="text"
-                    name="product_name"
-                    label="Ticker do ativo"
-                    placeholder="Ex: ITSA4"
-                  />
-                  <Input
-                    required
-                    scale="small"
-                    type="number"
-                    name="amount"
-                    label="Quantidade"
-                    placeholder="Quantidade de cotas"
-                  />
-                  <Input
-                    required
-                    scale="small"
-                    type="number"
-                    min="0.01"
-                    step="0.01"
-                    pattern="^\d+(\.\d{2})? *?$"
-                    name="movement_value"
-                    label="Preço de compra"
-                    placeholder="Ex: 125.40"
-                  />
-                  <Input
-                    required
-                    scale="small"
-                    type="date"
-                    name="movement_date"
-                    label="Data da compra"
-                    placeholder="dd/mm/aaaa"
-                  />
+          <div className="movement-type">
+            <strong>Tipo de Movimentação</strong>
 
-                  <div className="category">
-                    Categoria
-                    <Select
-                      name="category_id"
-                      options={selectOptions}
-                      placeholder="Escolha uma"
-                    />
-                  </div>
-                </div>
+            <ButtonsMovementType buttonSelected={movement_type}>
+              <button
+                type="button"
+                className="application-button"
+                onClick={() => switchForm('application')}
+              >
+                Aplicação
+              </button>
+              <button
+                type="button"
+                className="redemption-button"
+                onClick={() => switchForm('redemption')}
+              >
+                Resgate
+              </button>
+            </ButtonsMovementType>
+          </div>
+          {movement_type === 'application' && (
+            <Form
+              ref={applicationFormRef}
+              onSubmit={handleApplicationFormSubmit}
+              initialData={{ category_id: 'id' }}
+            >
+              <div className="movement_data">
+                <Input
+                  required
+                  scale="large"
+                  type="text"
+                  name="financial_institution"
+                  label="Instituição Financeira"
+                  placeholder="Onde foi realizada a movimentação"
+                />
+                <Input
+                  required
+                  scale="small"
+                  type="text"
+                  name="product_name"
+                  label="Ticker do ativo"
+                  placeholder="Ex: ITSA4"
+                />
+                <Input
+                  required
+                  scale="small"
+                  type="number"
+                  name="amount"
+                  label="Quantidade"
+                  placeholder="Quantidade de cotas"
+                />
+                <Input
+                  required
+                  scale="small"
+                  type="number"
+                  min="0.01"
+                  step="0.01"
+                  pattern="^\d+(\.\d{2})? *?$"
+                  name="movement_value"
+                  label="Preço de compra"
+                  placeholder="Ex: 125.40"
+                />
+                <Input
+                  required
+                  scale="small"
+                  type="date"
+                  name="movement_date"
+                  label="Data da compra"
+                  placeholder="dd/mm/aaaa"
+                />
 
-                <button type="submit">Confirmar</button>
-              </>
-            )}
-            {movement_type === 'redemption' && (
-              <>
-                <div className="movement_data">
-                  <Input
-                    required
-                    scale="large"
-                    type="text"
-                    name="financial_institution"
-                    label="Instituição Financeira"
-                    placeholder="Onde foi realizada a movimentação"
-                  />
-                  <Input
-                    required
-                    scale="small"
-                    type="text"
-                    name="product_name"
-                    label="Ticker do ativo"
-                    placeholder="Ex: ITSA4"
-                  />
-                  <Input
-                    required
-                    scale="small"
-                    type="number"
-                    name="amount"
-                    label="Quantidade"
-                    placeholder="Quantidade de cotas"
-                  />
-                  <Input
-                    required
-                    type="number"
-                    min="0.01"
-                    step="0.01"
-                    scale="small"
-                    pattern="^\d+(\.\d{2})? *?$"
-                    name="movement_value"
-                    label="Preço de Venda"
-                    placeholder="Ex: 125.40"
-                  />
-                  <Input
-                    required
-                    scale="small"
-                    type="date"
-                    name="movement_date"
-                    label="Data da venda"
-                    placeholder="dd/mm/aaaa"
+                <div className="category-application">
+                  Categoria
+                  <Select
+                    name="category_id"
+                    options={categoryApplicationSelectOptions}
+                    placeholder="Escolha uma"
                   />
                 </div>
+              </div>
 
-                <button type="submit">Confirmar</button>
-              </>
-            )}
-          </Form>
+              <button type="submit">Confirmar</button>
+            </Form>
+          )}
+          {movement_type === 'redemption' && (
+            <Form ref={redemptionFormRef} onSubmit={handleRedemptionFormSubmit}>
+              <div className="movement_data">
+                <Input
+                  required
+                  scale="large"
+                  type="text"
+                  name="financial_institution"
+                  label="Instituição Financeira"
+                  placeholder="Onde foi realizada a movimentação"
+                />
+                <div className="product-name-redemption">
+                  Ticker do ativo
+                  <Select
+                    name="product_name"
+                    options={productNameRedemptionSelectOptions}
+                    placeholder="Escolha um"
+                  />
+                </div>
+                <Input
+                  required
+                  scale="small"
+                  type="number"
+                  name="amount"
+                  label="Quantidade"
+                  placeholder="Quantidade de cotas"
+                />
+                <Input
+                  required
+                  type="number"
+                  min="0.01"
+                  step="0.01"
+                  scale="small"
+                  pattern="^\d+(\.\d{2})? *?$"
+                  name="movement_value"
+                  label="Preço de Venda"
+                  placeholder="Ex: 125.40"
+                />
+                <Input
+                  required
+                  scale="small"
+                  type="date"
+                  name="movement_date"
+                  label="Data da venda"
+                  placeholder="dd/mm/aaaa"
+                />
+              </div>
+
+              <button type="submit">Confirmar</button>
+            </Form>
+          )}
         </RegisterSection>
       </Container>
     </>
