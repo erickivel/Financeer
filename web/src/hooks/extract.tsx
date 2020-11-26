@@ -164,7 +164,6 @@ const ExtractProvider: React.FC = ({ children }) => {
         alert(
           'Ocorreu um erro com o servidor, tente novamente! Obs: A quantidade de cotas informada não pode ser maior do que as cotas que você possui deste ativo',
         );
-        console.error(err);
       }
     },
     [],
@@ -205,8 +204,6 @@ const ExtractProvider: React.FC = ({ children }) => {
       filterBalancesByNameByCategory,
     ],
   );
-
-  console.log(movements);
 
   return (
     <ExtractContext.Provider value={value}>{children}</ExtractContext.Provider>

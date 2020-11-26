@@ -123,16 +123,6 @@ const Dashboard: React.FC = () => {
 
       const category_id = movementWithEqualProductName.category.id;
 
-      console.log({
-        category_id,
-        product_name: data.product_name.toUpperCase(),
-        movement_date: new Date(data.movement_date),
-        financial_institution: data.financial_institution,
-        movement_value: Number(data.movement_value),
-        movement_type,
-        amount: Number(data.amount),
-      });
-
       createMovement({
         category_id,
         product_name: data.product_name.toUpperCase(),

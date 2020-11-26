@@ -40,7 +40,11 @@ const Extract: React.FC = () => {
                   <td className={movement.movement_type}>
                     {formatValue(movement.movement_value)}
                   </td>
-                  <td>{movement.category.name}</td>
+                  <td>
+                    {movement.category.name === 'Fundos Imobiliários'
+                      ? 'Fiis'
+                      : movement.category.name}
+                  </td>
                   <td className={movement.movement_type}>
                     {movement.movement_type === 'redemption'
                       ? 'Resgate'
