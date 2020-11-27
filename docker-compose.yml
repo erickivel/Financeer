@@ -9,7 +9,7 @@ services:
       - "3000:3000"
     volumes:
       - ./web:/usr/app
-    command: yarn start  
+    command: sh -c "yarn && yarn start"
   api-server:
     build: ./server
     container_name: server-financeer
@@ -21,7 +21,7 @@ services:
       DB_USERNAME: "root"
       DB_PASSWORD: "docker"
       DB_DATABASE: "app-db"
-    command: sh -c "yarn typeorm migration:run && yarn dev:server"
+    command: sh -c "yarn && yarn typeorm migration:run && yarn dev:server"
     volumes:
       - ./server:/usr/app
     links:
